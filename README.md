@@ -1,7 +1,7 @@
 Forked from [deep sort](https://github.com/nwojke/deep_sort).
 
 ### Changes made
-1. Added support for scipy 0.23 and above.`
+1. Added support for scipy 0.23 and above.
 2. Extended the deep sort model to include height (z-axis) and rotation (yaw) of the bounding box.
 
 ### Usage
@@ -17,8 +17,7 @@ tracker = DeepSort3D(
 
 # your code here
 
-detections = ...  # list[detections]
-# detection = [objectness, (x,y),(w,h),angle]
+detections = ...  # list[bbox], bbox = (objectness, (x, y), (w, h), angle)
 
 deep_sort_detection_list = []
 rotation_list = []
