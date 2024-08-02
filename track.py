@@ -1,5 +1,19 @@
 # vim: expandtab:ts=4:sw=4
 
+class AngleBuffer:
+    def __init__(self, size):
+        self.size = size
+        self.data = []
+
+    def append(self, item):
+        if len(self.data) >= self.size:
+            self.data.pop(0)  # Remove the oldest item
+        self.data.append(item)
+
+    def get_moving_average(self):
+        if len(self.data) == 0:
+            return 0
+        return sum(self.data) / len(self.data)
 
 class TrackState:
     """
@@ -72,6 +86,8 @@ class Track:
         self.age = 1
         self.time_since_update = 0
 
+        self.angle_buffer = AngleBuffer(10)
+
         self.state = TrackState.Tentative
         self.features = []
         if feature is not None:
@@ -94,6 +110,10 @@ class Track:
         ret[2] *= ret[3]
         ret[:2] -= ret[2:] / 2
         return ret
+
+    def get_angle(self):
+        print(f"track{self.track_id} angle_buffer: {self.angle_buffer.data}")
+        return self.angle_buffer.get_moving_average()
 
     def to_tlbr(self):
         """Get current position in bounding box format `(min x, miny, max x,
