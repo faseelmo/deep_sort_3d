@@ -2,7 +2,7 @@ Forked from [deep sort](https://github.com/nwojke/deep_sort).
 
 
 ### Changes made
-1. Added support for scipy 0.23 and above.
+1. Added support for scipy 0.23 and above. (See [issue](https://github.com/nwojke/deep_sort/issues/330))
 2. Extended the deep sort model to include height (z-axis) and rotation (yaw) of the bounding box.
 > Note: The Kalman filter has not been modified to account for rotation and height.
 Instead, these parameters are stored in the track object as a moving average over the last 10 frames.
