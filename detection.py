@@ -8,8 +8,9 @@ class Detection(object):
 
     Parameters
     ----------
-    tlwh : array_like
+    xywh : array_like
         Bounding box in format `(x, y, w, h)`.
+        Note: x and y are the coordinates of the center of the box.
     confidence : float
         Detector confidence score.
     feature : array_like
@@ -27,7 +28,6 @@ class Detection(object):
     """
 
     def __init__(self, xywh, confidence, feature):
-        # self.tlwh = np.asarray(tlwh, dtype=np.float32)
         self.tlwh = self.to_tlwh(xywh)
         self.confidence = float(confidence)
         self.feature = np.asarray(feature, dtype=np.float32)

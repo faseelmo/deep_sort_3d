@@ -56,7 +56,7 @@ class Tracker:
         for track in self.tracks:
             track.predict(self.kf)
 
-    def update(self, detections, rotation_list):
+    def update(self, detections, rotation_list=None, height_list=None):
         """Perform measurement update and track management.
 
         Parameters
@@ -64,10 +64,13 @@ class Tracker:
         detections : List[deep_sort.detection.Detection]
             A list of detections at the current time step.
 
+        rotation_list : List[float]
+            A list of rotation angles for each detection.
+
         """
         # Run matching cascade.
         matches, unmatched_tracks, unmatched_detections = self._match(
-            detections, rotation_list
+            detections, rotation_list, height_list
         )
 
         # Update track set.
@@ -92,7 +95,7 @@ class Tracker:
             np.asarray(features), np.asarray(targets), active_targets
         )
 
-    def _match(self, detections, rotation_list):
+    def _match(self, detections, rotation_list, height_list):
 
         def gated_metric(tracks, dets, track_indices, detection_indices):
             features = np.array([dets[i].feature for i in detection_indices])
@@ -120,7 +123,6 @@ class Tracker:
                 self.max_age,
                 self.tracks,
                 detections,
-                rotation_list,
                 confirmed_tracks,
             )
         )
@@ -138,7 +140,6 @@ class Tracker:
                 self.max_iou_distance,
                 self.tracks,
                 detections,
-                rotation_list,
                 iou_track_candidates,
                 unmatched_detections,
             )
@@ -146,16 +147,17 @@ class Tracker:
 
         matches = (
             matches_a + matches_b
-        )  # A list of matched track and detection indices.
+        )  # A list of tuples [(mathced track id, corresponding detection index)]
 
-        for track_idx, detection_idx in matches:
-            self.tracks[track_idx].angle_buffer.append(rotation_list[detection_idx])
+        if rotation_list is not None:
+            for track_idx, detection_idx in matches:
+                self.tracks[track_idx].angle_buffer.append(rotation_list[detection_idx])
+
+        if height_list is not None:
+            for track_idx, detection_idx in matches:
+                self.tracks[track_idx].height_buffer.append(height_list[detection_idx])
 
         unmatched_tracks = list(set(unmatched_tracks_a + unmatched_tracks_b))
-
-        # return should three tuples of two lists.
-        # The first list is the track/detection, the second is
-        # the corresponding rotation matrix.
 
         return matches, unmatched_tracks, unmatched_detections
 

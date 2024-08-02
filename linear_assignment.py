@@ -13,7 +13,6 @@ def min_cost_matching(
     max_distance,
     tracks,
     detections,
-    rotation_list,
     track_indices=None,
     detection_indices=None,
 ):
@@ -54,7 +53,6 @@ def min_cost_matching(
         track_indices = np.arange(len(tracks))
     if detection_indices is None:
         detection_indices = np.arange(len(detections))
-    # use detection_indices for rotation_list
 
     if len(detection_indices) == 0 or len(track_indices) == 0:
         return [], track_indices, detection_indices  # Nothing to match.
@@ -87,7 +85,6 @@ def matching_cascade(
     cascade_depth,
     tracks,
     detections,
-    rotation_list,
     track_indices=None,
     detection_indices=None,
 ):
@@ -131,7 +128,6 @@ def matching_cascade(
         track_indices = list(range(len(tracks)))
     if detection_indices is None:
         detection_indices = list(range(len(detections)))
-    # use detection_indices for rotation_list 
 
     unmatched_detections = detection_indices
     matches = []
@@ -150,7 +146,6 @@ def matching_cascade(
             max_distance,
             tracks,
             detections,
-            rotation_list,
             track_indices_l,
             unmatched_detections,
         )

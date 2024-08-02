@@ -1,13 +1,16 @@
 # vim: expandtab:ts=4:sw=4
 
-class AngleBuffer:
+class Buffer:
+    """
+    Buffer for storing the last `size` values of a given metric for computing
+    """
     def __init__(self, size):
         self.size = size
         self.data = []
 
     def append(self, item):
         if len(self.data) >= self.size:
-            self.data.pop(0)  # Remove the oldest item
+            self.data.pop(0)
         self.data.append(item)
 
     def get_moving_average(self):
@@ -22,7 +25,6 @@ class TrackState:
     the track state is changed to `confirmed`. Tracks that are no longer alive
     are classified as `deleted` to mark them for removal from the set of active
     tracks.
-
     """
 
     Tentative = 1
@@ -86,7 +88,8 @@ class Track:
         self.age = 1
         self.time_since_update = 0
 
-        self.angle_buffer = AngleBuffer(10)
+        self.angle_buffer = Buffer(10)
+        self.height_buffer = Buffer(10)
 
         self.state = TrackState.Tentative
         self.features = []
@@ -112,8 +115,12 @@ class Track:
         return ret
 
     def get_angle(self):
-        print(f"track{self.track_id} angle_buffer: {self.angle_buffer.data}")
+        """Get the average angle of the last 10 frames"""
         return self.angle_buffer.get_moving_average()
+
+    def get_height(self):
+        """Get the average height of the last 10 frames"""
+        return self.height_buffer.get_moving_average()
 
     def to_tlbr(self):
         """Get current position in bounding box format `(min x, miny, max x,
