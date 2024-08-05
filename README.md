@@ -23,7 +23,7 @@ tracker = DeepSort3D(
 
 # your code here
 
-detection_list = ...  # list[bbox], bbox = (objectness, (x, y), (w, h), angle, height)
+detection_list = ...  # list[bbox]. bbox = (objectness, (x, y), (w, h), angle, height)
 
 deep_sort_detection_list = []
 rotation_list = []
@@ -48,4 +48,5 @@ for track in tracker.tracks:
   print(track.track_id)
   print(track.to_tlwh())
   print(track.get_angle())
+  print(track.get_height())
 ```
